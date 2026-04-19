@@ -1,0 +1,49 @@
+{
+  "_version": "1.0.0",
+  "_note": "OTA-reloadable. Edit and save to hot-swap without restart.",
+
+  "confidence_threshold": 0.65,
+  "abstain_below_confidence": 0.55,
+
+  "kelly_fraction_cap": 0.02,
+  "anomaly_size_exponent": 3,
+
+  "sl_multiplier": 1.0,
+  "tp_multiplier": 1.0,
+
+  "spread_halt_multiplier": 1.5,
+  "max_spread_pips": 3.0,
+
+  "entry_expiry_buffer_minutes": 30,
+
+  "regime_confidence_thresholds": {
+    "trending_bullish":  0.65,
+    "trending_bearish":  0.65,
+    "ranging":           0.60,
+    "reversal_bull":     0.70,
+    "reversal_bear":     0.70,
+    "unknown":           0.80
+  },
+
+  "anomaly_detection": {
+    "isolation_forest_contamination": 0.05,
+    "structural_deviation_z_score": 3.0,
+    "calendar_impact_levels": ["High"]
+  },
+
+  "circuit_breaker": {
+    "gold_30min_move_pct": 1.5,
+    "spread_vs_baseline_multiplier": 3.0,
+    "vix_spike_1hr_pts": 20.0,
+    "volume_vs_baseline_multiplier": 5.0
+  },
+
+  "position_sizing": {
+    "base_risk_pct": 1.0,
+    "max_risk_pct": 2.0,
+    "min_lot": 0.01,
+    "max_lot": 1.0
+  },
+
+  "ota_dry_run_bars": 100
+}
