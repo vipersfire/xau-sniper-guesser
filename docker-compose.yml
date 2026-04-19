@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: xauusd_sniper_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: xauusd_sniper
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init_schema.sql:/docker-entrypoint-initdb.d/01_init_schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d xauusd_sniper"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  postgres_test:
+    image: postgres:16-alpine
+    container_name: xauusd_sniper_test_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: xauusd_sniper_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    tmpfs:
+      - /var/lib/postgresql/data  # in-memory for fast test runs
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d xauusd_sniper_test"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  postgres_data:
+    name: xauusd_sniper_pgdata
