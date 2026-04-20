@@ -3,7 +3,7 @@ import logging
 from ingestion.base.scheduler import ImportScheduler
 from ingestion.sources.fred_importer import FREDImporter
 from ingestion.sources.cot_importer import COTImporter
-from ingestion.sources.oanda_sentiment_importer import OANDASentimentImporter
+from ingestion.sources.yfinance_importer import YFinanceImporter
 from ingestion.sources.forexfactory_importer import ForexFactoryImporter
 from ingestion.sources.mt5_ohlcv_importer import MT5OHLCVImporter
 from ingestion.sources.kitco_rss_importer import KitcoRSSImporter
@@ -22,7 +22,7 @@ class IngestionManager:
     def _setup_importers(self):
         self.scheduler.register(FREDImporter())
         self.scheduler.register(COTImporter())
-        self.scheduler.register(OANDASentimentImporter())
+        self.scheduler.register(YFinanceImporter())
         self.scheduler.register(ForexFactoryImporter())
         self.scheduler.register(MT5OHLCVImporter())
         self.scheduler.register(KitcoRSSImporter())

@@ -38,8 +38,21 @@ class CandleWatcherThread(BaseThread):
             if last_time != prev_time and prev_time > 0:
                 self._last_bar_times[tf] = last_time
                 try:
-                    asyncio.run(self._engine.on_candle_close(tf, bars[-1]))
+                    asyncio.run(self._on_new_candle(tf, bars[-1]))
                 except Exception as e:
                     logger.error("Candle close handler error: %s", e)
             elif prev_time == 0:
                 self._last_bar_times[tf] = last_time
+
+    async def _on_new_candle(self, tf: str, bar: dict) -> None:
+        """Compute derived sentiment then hand off to trading engine."""
+        await self._update_derived_sentiment()
+        await self._engine.on_candle_close(tf, bar)
+
+    async def _update_derived_sentiment(self) -> None:
+        try:
+            from engine.signals.sentiment import SentimentSignals
+            signals = SentimentSignals()
+            await signals._compute_derived_sentiment()
+        except Exception as e:
+            logger.warning("Derived sentiment update failed: %s", e)
