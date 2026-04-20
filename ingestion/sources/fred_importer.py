@@ -27,7 +27,8 @@ class FREDImporter(BaseImporter):
 
     async def fetch(self) -> dict[str, str]:
         results = {}
-        async with aiohttp.ClientSession() as http:
+        headers = {"User-Agent": "xau-sniper-guesser/1.0 (research; send.faisalhazmi@gmail.com)"}
+        async with aiohttp.ClientSession(headers=headers) as http:
             for series_id in FRED_SERIES:
                 results[series_id] = await async_retry_with_backoff(
                     self._fetch_series, http, series_id,
@@ -41,7 +42,6 @@ class FREDImporter(BaseImporter):
             "api_key": settings.fred_api_key,
             "file_type": "json",
             "observation_start": (date.today() - timedelta(days=3650)).isoformat(),
-            "output_type": "1",  # realtime
         }
         async with http.get(FRED_BASE, params=params) as resp:
             resp.raise_for_status()
