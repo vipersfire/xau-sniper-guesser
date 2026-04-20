@@ -26,13 +26,9 @@ class Settings(BaseSettings):
     # FRED API
     fred_api_key: str = Field("")
 
-    # Nasdaq Data Link (COT)
-    nasdaq_api_key: str = Field("")
-
-    # OANDA
-    oanda_api_key: str = Field("")
-    oanda_account_id: str = Field("")
-    oanda_environment: str = Field("practice")  # practice | live
+    # CFTC COT (no key needed — public ZIP downloads)
+    cot_base_url: str = Field("https://www.cftc.gov/dta/zip/deacot{year}.zip")
+    cot_gold_code: str = Field("088691")
 
     # Telegram
     telegram_bot_token: str = Field("")

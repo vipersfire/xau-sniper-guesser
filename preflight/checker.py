@@ -2,7 +2,9 @@ import asyncio
 import logging
 from preflight.checks.base_check import CheckResult
 from preflight.checks.model_check import ModelCheck
-from preflight.checks.data_check import FREDDataCheck, COTDataCheck, OHLCVDataCheck
+from preflight.checks.data_check import (
+    FREDDataCheck, COTDataCheck, OHLCVDataCheck, VIXBaselineCheck, DerivedSentimentCheck,
+)
 from preflight.checks.broker_check import BrokerCheck
 from preflight.checks.spread_baseline_check import SpreadBaselineCheck
 from preflight.checks.config_check import ConfigCheck
@@ -17,6 +19,8 @@ class PreflightChecker:
             FREDDataCheck(),
             COTDataCheck(),
             OHLCVDataCheck(),
+            VIXBaselineCheck(),
+            DerivedSentimentCheck(),
             SpreadBaselineCheck(),
             ConfigCheck(),
         ]

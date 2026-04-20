@@ -1,4 +1,3 @@
-import aiohttp
 import logging
 from datetime import date, timedelta
 from ingestion.base.importer import BaseImporter
@@ -11,11 +10,13 @@ from utils.retry import async_retry_with_backoff
 logger = logging.getLogger(__name__)
 
 FRED_SERIES = {
-    "DGS10":   "10-Year Treasury Constant Maturity Rate",
-    "DFII10":  "10-Year TIPS Real Yield",
-    "DFF":     "Fed Funds Effective Rate",
-    "CPIAUCSL": "CPI All Urban Consumers",
-    "T10YIE":  "10-Year Breakeven Inflation",
+    "DGS10":             "10-Year Treasury Constant Maturity Rate",
+    "DFII10":            "10-Year TIPS Real Yield",
+    "DFF":               "Fed Funds Effective Rate",
+    "CPIAUCSL":          "CPI All Urban Consumers",
+    "T10YIE":            "10-Year Breakeven Inflation",
+    "DTWEXBGS":          "USD Broad Trade-Weighted Index (goods)",
+    "GOLDAMGBD228NLBM":  "Gold Fixing Price PM (USD/troy oz)",
 }
 
 FRED_BASE = "https://api.stlouisfed.org/fred/series/observations"
@@ -26,8 +27,10 @@ class FREDImporter(BaseImporter):
     run_interval = 86400  # daily
 
     async def fetch(self) -> dict[str, str]:
+        import aiohttp
         results = {}
-        async with aiohttp.ClientSession() as http:
+        headers = {"User-Agent": "xau-sniper-guesser/1.0 (research; send.faisalhazmi@gmail.com)"}
+        async with aiohttp.ClientSession(headers=headers) as http:
             for series_id in FRED_SERIES:
                 results[series_id] = await async_retry_with_backoff(
                     self._fetch_series, http, series_id,
@@ -35,7 +38,7 @@ class FREDImporter(BaseImporter):
                 )
         return results
 
-    async def _fetch_series(self, http: aiohttp.ClientSession, series_id: str) -> str:
+    async def _fetch_series(self, http, series_id: str) -> str:
         params = {
             "series_id": series_id,
             "api_key": settings.fred_api_key,
